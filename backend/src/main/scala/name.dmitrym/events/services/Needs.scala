@@ -54,54 +54,46 @@ case class Need(title: String,
 private[services] class NeedCodec extends Codec[Need] with LazyLogging {
   override def decode(reader: BsonReader,
                       decoderContext: DecoderContext): Need = {
+    def readOptionDate() = Some(new Date(reader.readDateTime()))
+
     var title = ""
     var completed = false
-    var createdDate = 0L
-    var updatedDate = 0L
-    var completedDate = 0L
+    var createdDate: Date = null // scalastyle:ignore
+    var updatedDate: Option[Date] = None
+    var completedDate: Option[Date] = None
 
     reader.readStartDocument()
     while (reader.readBsonType() != BsonType.END_OF_DOCUMENT) {
       reader.readName() match {
         case "title" => title = reader.readString()
         case "completed" => completed = reader.readBoolean()
-        case "createdDate" => createdDate = reader.readDateTime()
-        case "updatedDate" => updatedDate = reader.readDateTime()
-        case "completedDate" => completedDate = reader.readDateTime()
+        case "createdDate" => createdDate = new Date(reader.readDateTime())
+        case "updatedDate" => updatedDate = readOptionDate()
+        case "completedDate" => completedDate = readOptionDate()
         case "_id" => reader.readObjectId()
         case n => logger.error(s"Unsupported field name $n")
       }
     }
     reader.readEndDocument()
 
-    Need(title,
-         completed,
-         createdDate = new Date(createdDate),
-         updatedDate = updatedDate match {
-           case 0L => None
-           case v => Some(new Date(v))
-         },
-         completedDate = completedDate match {
-           case 0L => None
-           case v => Some(new Date(v))
-         })
+    Need(title, completed, createdDate, updatedDate, completedDate)
   }
 
   override def encode(writer: BsonWriter,
                       value: Need,
                       encoderContext: EncoderContext): Unit = {
+    def writeOptionDate(n: String, d: Option[Date]): Unit = {
+      d match {
+        case Some(v) => writer.writeDateTime(n, v.getTime)
+        case None => () // do nothing if field is not set
+      }
+    }
     writer.writeStartDocument()
     writer.writeString("title", value.title)
     writer.writeBoolean("completed", value.completed)
     writer.writeDateTime("createdDate", value.createdDate.getTime)
-    value.updatedDate match {
-      case Some(u) => writer.writeDateTime("updatedDate", u.getTime)
-      case None => () // do nothing if field is not set
-    }
-    value.completedDate match {
-      case Some(c) => writer.writeDateTime("completedDate", c.getTime)
-      case None => () // do nothing if field is not set
-    }
+    writeOptionDate("updatedDate", value.updatedDate)
+    writeOptionDate("completedDate", value.completedDate)
     writer.writeEndDocument()
   }
 
