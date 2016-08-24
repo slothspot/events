@@ -4,6 +4,8 @@ Dmitry Melnichenko <dmytro.i.am@gmail.com>
 :appversion: SNAPSHOT
 :toc: left
 
+image:https://travis-ci.org/slothspot/events.svg?branch=master["Build Status", link="https://travis-ci.org/slothspot/events"]
+
 Service to store planned and happened events implemented in link:http://www.scala-lang.org[Scala^] and licensed under
 link:https://www.apache.org/licenses/LICENSE-2.0[Apache License^].
 
