@@ -1,0 +1,12 @@
+= Events
+Dmitry Melnichenko <dmytro.i.am@gmail.com>
+2016-08-23
+:appversion: SNAPSHOT
+:toc: left
+
+Service to store planned and happened events implemented in link:http://www.scala-lang.org[Scala^] and licensed under
+link:https://www.apache.org/licenses/LICENSE-2.0[Apache License^].
+
+CAUTION: This software is in the early stage of development, so don't expect it to work at all.
+
+Check doc folder for more details.
