@@ -9,4 +9,4 @@ link:https://www.apache.org/licenses/LICENSE-2.0[Apache License^].
 
 CAUTION: This software is in the early stage of development, so don't expect it to work at all.
 
-Check doc folder for more details.
+Check docs folder for more details.
