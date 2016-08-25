@@ -15,18 +15,24 @@ IMPORTANT: This software is in the early stage of development, so don't expect i
 Nothing implemented yet
 
 == Todo
-* schedules
-* needs
-* events
-* places
+* Services
+** schedules
+** needs
+** events
+** places
+** wiki
+** ???
 * tagging
 * DSL
-* wiki
 * multi-user
+** google/github/facebook/vk auth
 * REST API
 * cli client
 * web client
 * SSL protection
+* web data crawler
+** imdb
+** ???
 
 == Implementation details
 
