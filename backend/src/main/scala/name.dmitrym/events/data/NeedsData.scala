@@ -14,16 +14,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package name.dmitrym.events.services
+package name.dmitrym.events.data
 
 import java.util.Date
 
-import com.mongodb.async.client.MongoClients
-import com.typesafe.scalalogging.LazyLogging
-import name.dmitrym.events.storage.MongoConnection
 import org.bson.{BsonReader, BsonType, BsonWriter}
-import org.bson.codecs.{Codec, DecoderContext, EncoderContext}
-import org.bson.codecs.configuration.CodecRegistries
+import org.bson.codecs.{DecoderContext, EncoderContext}
 
 case class Need(title: String,
                 completed: Boolean = false,
@@ -51,7 +47,8 @@ case class Need(title: String,
   }
 }
 
-private[services] class NeedCodec extends Codec[Need] with LazyLogging {
+private[events] class NeedCodec extends GenericMongoCodec[Need] {
+  override def getEncoderClass: Class[Need] = classOf[Need]
   override def decode(reader: BsonReader,
                       decoderContext: DecoderContext): Need = {
     def readOptionDate() = Some(new Date(reader.readDateTime()))
@@ -96,14 +93,4 @@ private[services] class NeedCodec extends Codec[Need] with LazyLogging {
     writeOptionDate("completedDate", value.completedDate)
     writer.writeEndDocument()
   }
-
-  override def getEncoderClass: Class[Need] = classOf[Need]
-}
-
-object Needs extends LazyLogging {
-  private[this] val cr = CodecRegistries.fromRegistries(
-    CodecRegistries.fromCodecs(new NeedCodec),
-    MongoClients.getDefaultCodecRegistry)
-  private[this] val col =
-    MongoConnection.db.withCodecRegistry(cr).getCollection[Need]("needs")
 }
